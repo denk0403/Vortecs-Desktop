@@ -20,7 +20,6 @@ public class Application {
 		//frame.setMinimumSize(new Dimension(300, 100));
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
 
 		// innerPanel set-up
 		JPanel innerPanel = new JPanel(new BorderLayout());
@@ -32,6 +31,7 @@ public class Application {
 		//////////////////////////////////////////////
 		frame.add(innerPanel);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 }

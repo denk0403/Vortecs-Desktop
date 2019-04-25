@@ -26,14 +26,16 @@ public class TransformationPlane implements Displayable, Transformable {
 		// helps to resize grid lines
 		float artScale = realScale; // artificial scale
 		float tempScale = realScale;
+		
 		while (tempScale < Display.MIN_SCALE) {
 			tempScale *= Display.MAX_SCALE / Display.MIN_SCALE;
-			artScale *= (Display.MAX_SCALE / Display.MIN_SCALE) * (Display.MAX_SCALE / Display.MIN_SCALE);
+			artScale *= Math.pow((Display.MAX_SCALE / Display.MIN_SCALE), 2);
 		}
 		while (tempScale > Display.MAX_SCALE) {
 			tempScale *= Display.MIN_SCALE / Display.MAX_SCALE;
-			artScale *= (Display.MIN_SCALE / Display.MAX_SCALE) * (Display.MIN_SCALE / Display.MAX_SCALE);
+			artScale *= Math.pow((Display.MIN_SCALE / Display.MAX_SCALE), 2);;
 		}
+		
 
 		// sets the stroke to look consistent with the scale
 		g2.setStroke(new BasicStroke(1.5f / realScale));
