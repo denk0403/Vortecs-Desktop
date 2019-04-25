@@ -24,16 +24,22 @@ public class InputBoxContainer extends JPanel {
 		test1.changeXTo(10 * Math.random() - 5);
 		test1.changeYTo(10 * Math.random() - 5);
 		VectorBox test2 = new VectorBox();
+		test2.changeXTo(0.1);
+		test2.changeYTo(0.1);
 		VectorBox test3 = new VectorBox();
 		test3.changeXTo(10 * Math.random() - 5);
 		test3.changeYTo(10 * Math.random() - 5);
 		VectorBox test4 = new VectorBox();
 		test4.changeXTo(10 * Math.random() - 5);
 		test4.changeYTo(10 * Math.random() - 5);
+		VectorBox test5 = new VectorBox();
+		test5.changeXTo(10);
+		test5.changeYTo(10);
 		this.addInputBox(test1);
 		this.addInputBox(test2);
 		this.addInputBox(test3);
 		this.addInputBox(test4);
+		this.addInputBox(test5);
 
 	}
 

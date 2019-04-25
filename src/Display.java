@@ -1,16 +1,11 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 
 import javax.swing.JComponent;
 
@@ -18,27 +13,24 @@ import javax.swing.JComponent;
 public class Display extends JComponent {
 
 	Camera camera;
-	double centerX; // maybe temp
-	double centerY; // maybe temp
 	Displayable item;
-	int width; // maybe temp
-	int height; // maybe temp
-	public static final float DEFAULT_SCALE = 7f;
-	public static final float MIN_SCALE = DEFAULT_SCALE / 2.5f;
-	public static final float MAX_SCALE = 2 * DEFAULT_SCALE;
+	int width;
+	int height;
+	double centerX;
+	double centerY;
+	public static final float DEFAULT_SCALE = 6f;
+	public static final float MIN_SCALE = DEFAULT_SCALE / 4f * 3f;
+	public static final float MAX_SCALE = 7f / 3f * DEFAULT_SCALE;
 	public static final float SCALE_FACTOR = 1 / 0.925f;
 
 	// creates a new Display
 	public Display(Displayable item, int width, int height) {
-		this.item = item; // maybe temp
-		this.width = width; // maybe temp
-		this.height = height; // maybe temp
-		this.camera = new Camera(this.width/2, this.height/2, DEFAULT_SCALE);
-		this.centerX = this.width / 2; // maybe temp
-		this.centerY = this.height / 2; // maybe temp
-		//this.camera.translate(this.width / 2, this.height / 2);
-		//his.camera.scale(DEFAULT_SCALE, -DEFAULT_SCALE);
-		//System.out.println(this.camera);
+		this.item = item;
+		this.width = width;
+		this.height = height;
+		this.centerX = this.width / 2;
+		this.centerY = this.height / 2;
+		this.camera = new Camera(this.centerX, this.centerY, DEFAULT_SCALE);
 		this.initComponents();
 	}
 
@@ -46,9 +38,9 @@ public class Display extends JComponent {
 	private void initComponents() {
 		// this.setMinimumSize(new Dimension(this.width, this.height));
 		this.setPreferredSize(new Dimension(this.width, this.height));
-		
+
 		this.addMouseWheelListener(new MouseWheelListener() {
-			
+
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				Camera camera = Display.this.camera;
@@ -56,111 +48,48 @@ public class Display extends JComponent {
 
 				if (e.getPreciseWheelRotation() > 0.1) { // zoom out (shrinks)
 					if (scale > 1 / 200.0) {
-						
-						double dx = this.xOriginDisplacementFromMouse(e);
-						double dy = this.yOriginDisplacementFromMouse(e) ;
-						camera.translate(dx, -dy);
+						double ds = (Display.SCALE_FACTOR - 1);
+						double dx = this.xOriginDisplacementFromMouse(e) * ds * 2;
+						double dy = this.yOriginDisplacementFromMouse(e) * ds * 2;
+						camera.translate(dx, dy);
 						camera.scale(1 / Display.SCALE_FACTOR);
-						//camera.translate(-dx, -dy);
-						
 						System.out.println(camera);
 					}
-				// VERY BROKEN!!!!!
+
 				} else if (e.getPreciseWheelRotation() < -0.1) { // zoom in (grows)
 					if (scale < 500) {
 						double ds = (Display.SCALE_FACTOR - 1);
-						//double dx = -(zoomPointX * scalechange);
-						//double dy = -(zoomPointY * scalechange);
-						double dx = this.xOriginDisplacementFromMouse(e)*ds;
-						double dy = this.yOriginDisplacementFromMouse(e)*ds;
-						System.out.println(camera);
-						//camera.translate(-this.xDistanceToCenter(e), this.yDistanceToCenter(e));
-						camera.translate(-dx, dy);
-						//camera.translate(-camera.getTranslateX(), -camera.getTranslateY());
+						double dx = this.xOriginDisplacementFromMouse(e) * ds * 2;
+						double dy = this.yOriginDisplacementFromMouse(e) * ds * 2;
+						camera.translate(-dx, -dy);
 						camera.scale(Display.SCALE_FACTOR);
-						
-						//camera.translate(Display.this.width/2, Display.this.height/2);
-						//camera.translate(-e.getX(), e.getY());
-						
-						//camera.translate(this.xDistanceToCenter(e), -this.yDistanceToCenter(e));
-						
+
 					}
 				}
 
 				Display.this.repaint();
+			}
+
+			// finds mouse's x-displacement from center of display
+			private double xDistanceToCenter(MouseWheelEvent e) {
+				return e.getX() - Display.this.centerX;
 			}
 			
-			private double xDistanceToCenter(MouseWheelEvent e) {
-				return e.getX() - Display.this.centerX;
-			}
-
+			// finds mouse's y-displacement from center of display
 			private double yDistanceToCenter(MouseWheelEvent e) {
 				return Display.this.centerY - e.getY();
 			}
 
+			// finds mouse's x-displacement from display's origin
 			private double xOriginDisplacementFromMouse(MouseWheelEvent e) {
 				return this.xDistanceToCenter(e) - Display.this.getOriginXDisplacementToCenter();
 			}
 
+			// finds mouse's y-displacement from display's origin
 			private double yOriginDisplacementFromMouse(MouseWheelEvent e) {
-				return this.yDistanceToCenter(e) - Display.this.getOriginYDisplacementToCenter();
+				return Display.this.getOriginYDisplacementToCenter() - this.yDistanceToCenter(e);
 			}
 		});
-		/*
-		// adds a Mouse Wheel Listener
-		this.addMouseWheelListener(new MouseWheelListener() {
-
-			// adjusts "zoom" of camera
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				AffineTransform camera = Display.this.camera;
-				float scale = (float) Math.sqrt(Math.abs(camera.getDeterminant()));
-
-				if (e.getPreciseWheelRotation() > 0.15) { // zoom out (shrinks)
-					if (scale > 1 / 200.0) {
-						
-						double dx = this.xOriginDisplacementFromMouse(e) / 25.0 / scale;
-						double dy = this.yOriginDisplacementFromMouse(e) / 25.0 / scale;
-						camera.translate(dx, dy);
-						camera.scale(1 / Display.SCALE_FACTOR, 1 / Display.SCALE_FACTOR);
-						
-						System.out.println(camera);
-					}
-				// VERY BROKEN!!!!!
-				} else if (e.getPreciseWheelRotation() < -0.10) { // zoom in (grows)
-					if (scale < 500) {
-						//camera.scale(Display.SCALE_FACTOR, Display.SCALE_FACTOR);
-						//scale = (float) Math.sqrt(Math.abs(camera.getDeterminant()));
-						double dx = -this.xOriginDisplacementFromMouse(e)*(Display.SCALE_FACTOR - 1)/scale;
-						double dy = -this.yOriginDisplacementFromMouse(e)*(Display.SCALE_FACTOR - 1)/scale;
-						//double dx = this.xOriginDisplacementFromMouse(e) / 25.0 / scale;
-						//double dy = this.yOriginDisplacementFromMouse(e) / 25.0 / scale;
-						camera.translate(dx, dy);
-						camera.scale(Display.SCALE_FACTOR, Display.SCALE_FACTOR);
-						//camera.translate(dx, dy);
-						
-					}
-				}
-
-				Display.this.repaint();
-			}
-
-			private double xDistanceToCenter(MouseWheelEvent e) {
-				return e.getX() - Display.this.centerX;
-			}
-
-			private double yDistanceToCenter(MouseWheelEvent e) {
-				return Display.this.centerY - e.getY();
-			}
-
-			private double xOriginDisplacementFromMouse(MouseWheelEvent e) {
-				return this.xDistanceToCenter(e) - Display.this.getOriginXDisplacementToCenter();
-			}
-
-			private double yOriginDisplacementFromMouse(MouseWheelEvent e) {
-				return this.yDistanceToCenter(e) - Display.this.getOriginYDisplacementToCenter();
-			}
-		});
-		*/
 		// adds a Mouse Motion Listener
 		this.addMouseMotionListener(new MouseMotionListener() {
 
@@ -172,8 +101,6 @@ public class Display extends JComponent {
 			public void mouseMoved(MouseEvent e) {
 				lastX = 0;
 				lastY = 0;
-				//System.out.println(this.xOriginDisplacementFromMouse(e));
-				//System.out.println(this.yOriginDisplacementFromMouse(e));
 			}
 
 			// responsible for panning camera
@@ -183,41 +110,26 @@ public class Display extends JComponent {
 					lastX = e.getX();
 					lastY = e.getY();
 				}
-//				 System.out.print("X: ");
-//				 System.out.println(camera.getTranslateX());
-//				 System.out.print("Y: ");
-//				 System.out.println(camera.getTranslateY());
 
+				/**
+				 * 
 				// function object to get the bounds of a Displayable
 				DisplayableVisitor<Integer> boundGetter = new DisplayableVisitor<Integer>() {
 
-					/**
-					 * ADJUST MATH!!!
-					 */
+					
+					// MATH HERE IS ARBITRARY!!! TWEAK AND BALANCE IT!!!!
+					 
 					public Integer visit(TransformationPlane tp) {
 						return (int) (2.5 * TransformationPlane.NUM_OF_GRID_LINES);
 					}
 				};
 
+				*/
+				
 				// pans camera
 				camera.translate(e.getX() - lastX, e.getY() - lastY);
-				//camera.translate((e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
-						//-(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
 
-				// System.out.println(camera);
-				// System.out.println(camera.getTranslateX());
-				// System.out.println(camera.getTranslateY());
-				// System.out.println(Display.this.centerX);
-				// System.out.println(Display.this.centerY);
-				// System.out.println(camera.getTranslateY());
-				//System.out.println(Display.this.getOriginXDisplacementToCenter());
-				//System.out.println(Display.this.getOriginYDisplacementToCenter());
-				// System.out.println(Math.abs(camera.getTranslateX() - Display.this.centerX));
-				// System.out.println(Display.this.item.accept(boundGetter));
-				// System.out.println(Math.abs(camera.getTranslateY() - Display.this.centerY));
-				// System.out.println(Display.this.item.accept(boundGetter));
-				System.out.println("_______");
-
+				/*
 				// THIS PART IS KINDA BROKEN!!!!
 				// checks if movement was outside of bounds
 				if (Math.abs(camera.getTranslateX() - Display.this.centerX) > Display.this.item
@@ -227,10 +139,8 @@ public class Display extends JComponent {
 
 					// moves camera back
 					camera.translate(-(e.getX() - lastX), -(e.getY() - lastY));
-					//camera.translate(
-							//-(e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
-							//(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
 				}
+				*/
 
 				// updates values of mouse's last position
 				lastX = e.getX();
@@ -239,77 +149,34 @@ public class Display extends JComponent {
 				// repaints the view to display the changes
 				Display.this.repaint();
 			}
-			
-			private double xDistanceToCenter(MouseEvent e) {
-				return e.getX() - Display.this.centerX;
-			}
 
-			private double yDistanceToCenter(MouseEvent e) {
-				return Display.this.centerY - e.getY();
-			}
-
-			private double xOriginDisplacementFromMouse(MouseEvent e) {
-				return this.xDistanceToCenter(e) - Display.this.getOriginXDisplacementToCenter();
-			}
-
-			private double yOriginDisplacementFromMouse(MouseEvent e) {
-				return this.yDistanceToCenter(e) - Display.this.getOriginYDisplacementToCenter();
-			}
 		});
 
 		this.addMouseListener(new MouseListener() {
 
-			public void mouseReleased(MouseEvent e) {
-			}
+			public void mouseReleased(MouseEvent e) {}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
+			public void mousePressed(MouseEvent e) {}
 
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+			public void mouseExited(MouseEvent e) {}
 
-			}
+			public void mouseEntered(MouseEvent e) {}
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() == 2) {
-					Display.this.camera = new Camera(Display.this.width/2, Display.this.height/2, Display.this.camera.getScale());
-				}
-				else if (e.getClickCount() == 3) {
-					Display.this.camera = new Camera(Display.this.width/2, Display.this.height/2, Display.DEFAULT_SCALE);
+					Display.this.camera = new Camera(Display.this.width / 2,
+							Display.this.height / 2, Display.this.camera.getScale());
+				} else if (e.getClickCount() == 3) {
+					Display.this.camera = new Camera(Display.this.width / 2,
+							Display.this.height / 2, Display.DEFAULT_SCALE);
 				}
 				Display.this.repaint();
 			}
-			
-			/*
-			private void recenterView() {
-				double[] viewMatrix = new double[6];
-				Display.this.camera.getMatrix(viewMatrix);
-				viewMatrix[4] = Display.this.centerX;
-				viewMatrix[5] = Display.this.centerY;
-				Display.this.camera.setTransform(new AffineTransform(viewMatrix));
-				Display.this.repaint();
-			}
-			
-			private void resetView() {
-				Display.this.camera = new AffineTransform();
-				Display.this.camera.translate(Display.this.width / 2, Display.this.height / 2);
-				Display.this.camera.scale(DEFAULT_SCALE, -DEFAULT_SCALE);
-			}
-			*/
 		});
 	}
 
-	@Override
+	// draws the display
 	protected void paintComponent(Graphics g) {
 		this.revalidate();
 		Graphics2D g2 = (Graphics2D) g;

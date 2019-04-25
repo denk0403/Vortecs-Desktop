@@ -68,14 +68,14 @@ public abstract class Vector {
 		// draws arrow head PI/8 radians from terminal line
 		g2.draw(new Line2D.Double((this.xComponent * scale), (this.yComponent * scale),
 				((this.xComponent * scale)
-						+ scale / 3 * Math.cos(this.theta + Math.PI - (Math.PI / 8))),
+						+ scale * this.length / 8 * Math.cos(this.theta + Math.PI - (Math.PI / 8))),
 				((this.yComponent * scale)
-						+ scale / 3 * Math.sin(this.theta + Math.PI - (Math.PI / 8)))));
+						+ scale * this.length / 8 * Math.sin(this.theta + Math.PI - (Math.PI / 8)))));
 		g2.draw(new Line2D.Double((this.xComponent * scale), (this.yComponent * scale),
 				((this.xComponent * scale)
-						+ scale / 3 * Math.cos(this.theta + Math.PI + (Math.PI / 8))),
+						+ scale * this.length / 8 * Math.cos(this.theta + Math.PI + (Math.PI / 8))),
 				((this.yComponent * scale)
-						+ scale / 3 * Math.sin(this.theta + Math.PI + (Math.PI / 8)))));
+						+ scale * this.length / 8 * Math.sin(this.theta + Math.PI + (Math.PI / 8)))));
 	}
 
 }

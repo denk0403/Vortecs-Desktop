@@ -34,7 +34,6 @@ public class TransformationPlane implements Displayable, Transformable {
 			tempScale *= Display.MIN_SCALE / Display.MAX_SCALE;
 			artScale *= (Display.MIN_SCALE / Display.MAX_SCALE) * (Display.MIN_SCALE / Display.MAX_SCALE);
 		}
-		//System.out.println(tempScale);
 
 		// sets the stroke to look consistent with the scale
 		g2.setStroke(new BasicStroke(1.5f / realScale));
