@@ -26,7 +26,7 @@ public class Application {
 		JPanel innerPanel = new JPanel(new BorderLayout());
 		ControlPanel controls = new ControlPanel();
 		Display screen = new Display(new TransformationPlane(), 800, 600);
-		innerPanel.add(controls, BorderLayout.WEST);
+		//innerPanel.add(controls, BorderLayout.WEST);
 		innerPanel.add(screen, BorderLayout.CENTER);
 
 		//////////////////////////////////////////////

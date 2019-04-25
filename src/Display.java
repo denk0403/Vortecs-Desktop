@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 // displayer for graph inputs
 public class Display extends JComponent {
 
-	AffineTransform camera;
+	Camera camera;
 	double centerX; // maybe temp
 	double centerY; // maybe temp
 	Displayable item;
@@ -26,24 +26,19 @@ public class Display extends JComponent {
 	public static final float DEFAULT_SCALE = 7f;
 	public static final float MIN_SCALE = DEFAULT_SCALE / 2.5f;
 	public static final float MAX_SCALE = 2 * DEFAULT_SCALE;
-	public static final float SCALE_FACTOR = 1 / 0.975f;
-
-	// creates a default Display
-	public Display(Displayable item) {
-		this(item, 200, 200);
-	}
+	public static final float SCALE_FACTOR = 1 / 0.925f;
 
 	// creates a new Display
 	public Display(Displayable item, int width, int height) {
-		this.camera = new AffineTransform();
 		this.item = item; // maybe temp
 		this.width = width; // maybe temp
 		this.height = height; // maybe temp
+		this.camera = new Camera(this.width/2, this.height/2, DEFAULT_SCALE);
 		this.centerX = this.width / 2; // maybe temp
 		this.centerY = this.height / 2; // maybe temp
-		this.camera.translate(this.width / 2, this.height / 2);
-		this.camera.scale(DEFAULT_SCALE, -DEFAULT_SCALE);
-		System.out.println(this.camera);
+		//this.camera.translate(this.width / 2, this.height / 2);
+		//his.camera.scale(DEFAULT_SCALE, -DEFAULT_SCALE);
+		//System.out.println(this.camera);
 		this.initComponents();
 	}
 
@@ -51,7 +46,67 @@ public class Display extends JComponent {
 	private void initComponents() {
 		// this.setMinimumSize(new Dimension(this.width, this.height));
 		this.setPreferredSize(new Dimension(this.width, this.height));
+		
+		this.addMouseWheelListener(new MouseWheelListener() {
+			
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				Camera camera = Display.this.camera;
+				double scale = (float) Math.sqrt(Math.abs(camera.getScale()));
 
+				if (e.getPreciseWheelRotation() > 0.1) { // zoom out (shrinks)
+					if (scale > 1 / 200.0) {
+						
+						double dx = this.xOriginDisplacementFromMouse(e);
+						double dy = this.yOriginDisplacementFromMouse(e) ;
+						camera.translate(dx, -dy);
+						camera.scale(1 / Display.SCALE_FACTOR);
+						//camera.translate(-dx, -dy);
+						
+						System.out.println(camera);
+					}
+				// VERY BROKEN!!!!!
+				} else if (e.getPreciseWheelRotation() < -0.1) { // zoom in (grows)
+					if (scale < 500) {
+						double ds = (Display.SCALE_FACTOR - 1);
+						//double dx = -(zoomPointX * scalechange);
+						//double dy = -(zoomPointY * scalechange);
+						double dx = this.xOriginDisplacementFromMouse(e)*ds;
+						double dy = this.yOriginDisplacementFromMouse(e)*ds;
+						System.out.println(camera);
+						//camera.translate(-this.xDistanceToCenter(e), this.yDistanceToCenter(e));
+						camera.translate(-dx, dy);
+						//camera.translate(-camera.getTranslateX(), -camera.getTranslateY());
+						camera.scale(Display.SCALE_FACTOR);
+						
+						//camera.translate(Display.this.width/2, Display.this.height/2);
+						//camera.translate(-e.getX(), e.getY());
+						
+						//camera.translate(this.xDistanceToCenter(e), -this.yDistanceToCenter(e));
+						
+					}
+				}
+
+				Display.this.repaint();
+			}
+			
+			private double xDistanceToCenter(MouseWheelEvent e) {
+				return e.getX() - Display.this.centerX;
+			}
+
+			private double yDistanceToCenter(MouseWheelEvent e) {
+				return Display.this.centerY - e.getY();
+			}
+
+			private double xOriginDisplacementFromMouse(MouseWheelEvent e) {
+				return this.xDistanceToCenter(e) - Display.this.getOriginXDisplacementToCenter();
+			}
+
+			private double yOriginDisplacementFromMouse(MouseWheelEvent e) {
+				return this.yDistanceToCenter(e) - Display.this.getOriginYDisplacementToCenter();
+			}
+		});
+		/*
 		// adds a Mouse Wheel Listener
 		this.addMouseWheelListener(new MouseWheelListener() {
 
@@ -105,7 +160,7 @@ public class Display extends JComponent {
 				return this.yDistanceToCenter(e) - Display.this.getOriginYDisplacementToCenter();
 			}
 		});
-
+		*/
 		// adds a Mouse Motion Listener
 		this.addMouseMotionListener(new MouseMotionListener() {
 
@@ -123,7 +178,7 @@ public class Display extends JComponent {
 
 			// responsible for panning camera
 			public void mouseDragged(MouseEvent e) {
-				AffineTransform camera = Display.this.camera;
+				Camera camera = Display.this.camera;
 				if (lastX == 0) {
 					lastX = e.getX();
 					lastY = e.getY();
@@ -145,8 +200,9 @@ public class Display extends JComponent {
 				};
 
 				// pans camera
-				camera.translate((e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
-						-(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
+				camera.translate(e.getX() - lastX, e.getY() - lastY);
+				//camera.translate((e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
+						//-(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
 
 				// System.out.println(camera);
 				// System.out.println(camera.getTranslateX());
@@ -170,9 +226,10 @@ public class Display extends JComponent {
 								- Display.this.centerY) > Display.this.item.accept(boundGetter)) {
 
 					// moves camera back
-					camera.translate(
-							-(e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
-							(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
+					camera.translate(-(e.getX() - lastX), -(e.getY() - lastY));
+					//camera.translate(
+							//-(e.getX() - lastX) / Math.sqrt(Math.abs(camera.getDeterminant())),
+							//(e.getY() - lastY) / Math.sqrt(Math.abs(camera.getDeterminant())));
 				}
 
 				// updates values of mouse's last position
@@ -225,14 +282,15 @@ public class Display extends JComponent {
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() == 2) {
-					recenterView();
+					Display.this.camera = new Camera(Display.this.width/2, Display.this.height/2, Display.this.camera.getScale());
 				}
 				else if (e.getClickCount() == 3) {
-					resetView();
+					Display.this.camera = new Camera(Display.this.width/2, Display.this.height/2, Display.DEFAULT_SCALE);
 				}
 				Display.this.repaint();
 			}
 			
+			/*
 			private void recenterView() {
 				double[] viewMatrix = new double[6];
 				Display.this.camera.getMatrix(viewMatrix);
@@ -247,6 +305,7 @@ public class Display extends JComponent {
 				Display.this.camera.translate(Display.this.width / 2, Display.this.height / 2);
 				Display.this.camera.scale(DEFAULT_SCALE, -DEFAULT_SCALE);
 			}
+			*/
 		});
 	}
 
@@ -254,7 +313,7 @@ public class Display extends JComponent {
 	protected void paintComponent(Graphics g) {
 		this.revalidate();
 		Graphics2D g2 = (Graphics2D) g;
-		g2.transform(this.camera);
+		g2.transform(this.camera.getTransform());
 		this.item.display(g2);
 	}
 
