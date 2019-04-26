@@ -23,8 +23,8 @@ public class Display extends JComponent {
 	Displayable item;
 	int width;
 	int height;
-	double centerX;
-	double centerY;
+	private double centerX;
+	private double centerY;
 	public static final float DEFAULT_SCALE = 8f;
 	public static final float MIN_SCALE = DEFAULT_SCALE / 1.5f;
 	public static final float MAX_SCALE = 1.5f * DEFAULT_SCALE;
@@ -53,38 +53,15 @@ public class Display extends JComponent {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				Camera camera = Display.this.camera;
 				double scale = (float) Math.sqrt(camera.getScale());
-				Visitor<Undoable, Undoable> vis;
 				
 				if (e.getPreciseWheelRotation() > 0.1) { // zoom out (shrinks)
 					if (scale > 1 / 200.0) {
 						camera.scaleAboutPoint(1 / Display.SCALE_FACTOR, e.getX(), e.getY());
-						vis = new Visitor<Undoable, Undoable>() {
-							
-							@Override
-							public Undoable visit(Undoable f) {
-								((Camera)f).scaleAboutPoint(Display.SCALE_FACTOR, e.getX(), e.getY());
-								Display.this.repaint();
-								return f;
-							}
-						};
-						Pair<Undoable, Visitor<Undoable, Undoable>> pair = new Pair<Undoable, Visitor<Undoable,Undoable>>(camera, vis);
-						Undo.getInstance().addOperation(pair);
 					}
 
 				} else if (e.getPreciseWheelRotation() < -0.1) { // zoom in (grows)
 					if (scale < 500) {
 						camera.scaleAboutPoint(Display.SCALE_FACTOR, e.getX(), e.getY());
-						vis = new Visitor<Undoable, Undoable>() {
-							
-							@Override
-							public Undoable visit(Undoable f) {
-								((Camera)f).scaleAboutPoint(1 / Display.SCALE_FACTOR, e.getX(), e.getY());
-								Display.this.repaint();
-								return f;
-							}
-						};
-						Pair<Undoable, Visitor<Undoable, Undoable>> pair = new Pair<Undoable, Visitor<Undoable,Undoable>>(camera, vis);
-						Undo.getInstance().addOperation(pair);
 					}
 				}
 				
@@ -98,8 +75,6 @@ public class Display extends JComponent {
 
 			int lastX = 0;
 			int lastY = 0;
-			int pauseX = 0;
-			int pauseY = 0;
 
 			// resets last position of mouseX and mouseY to 0
 			// if not dragged

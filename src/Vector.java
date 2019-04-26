@@ -32,7 +32,7 @@ public abstract class Vector {
 		this.yComponent = v.getYComponent();
 		this.length = v.getLength();
 		this.theta = v.getAngle();
-		this.color = this.generateRandomColor();
+		this.color = generateRandomColor();
 		this.arrowHeadLength = this.length * ARROW_TO_ARROW_HEAD_SCALE;
 	}
 

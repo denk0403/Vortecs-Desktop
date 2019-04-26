@@ -20,31 +20,28 @@ public class Application {
 		// frame set-up
 		JFrame frame = new JFrame("Grapher 3.0");
 		frame.setPreferredSize(new Dimension(800, 600));
-		//frame.setMinimumSize(new Dimension(300, 100));
+		// frame.setMinimumSize(new Dimension(300, 100));
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		frame.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if ((e.getKeyCode() == KeyEvent.VK_Z)) {
-					System.out.println("hi");
-					Undo.getInstance().undo();
-				}
+
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
-					System.out.println("hi");
-					Undo.getInstance().undo();
+				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
+						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
+					//// Will undo
 				}
 			}
 		});
@@ -53,7 +50,7 @@ public class Application {
 		JPanel innerPanel = new JPanel(new BorderLayout());
 		ControlPanel controls = new ControlPanel();
 		Display screen = new Display(new TransformationPlane(), 800, 600);
-		//innerPanel.add(controls, BorderLayout.WEST);
+		// innerPanel.add(controls, BorderLayout.WEST);
 		innerPanel.add(screen, BorderLayout.CENTER);
 
 		//////////////////////////////////////////////

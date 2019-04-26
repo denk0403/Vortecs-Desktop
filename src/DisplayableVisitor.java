@@ -1,4 +1,4 @@
-public interface DisplayableVisitor<T> extends Visitor<T, Displayable>{
+public interface DisplayableVisitor<T> {
 	
 	public T visit(TransformationPlane tp);
 	
