@@ -6,8 +6,7 @@ public class PolarVector extends Vector {
 	// creates a polar vector with a random color
 	public PolarVector(double length, double theta) {
 		super(length * Math.cos(theta), length * Math.sin(theta), length, theta,
-				new Color((int) (190 * Math.random()) + 45, (int) (190 * Math.random()) + 45,
-						(int) (190 * Math.random()) + 45));
+				Vector.generateRandomColor());
 	}
 
 	// creates a polar vector from length and theta values

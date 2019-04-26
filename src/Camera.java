@@ -1,7 +1,7 @@
 import java.awt.geom.AffineTransform;
 
 // represents a Camera object
-public class Camera {
+public class Camera implements Undoable{
 
 	private double translateX;
 	private double translateY;
@@ -34,6 +34,12 @@ public class Camera {
 		this.translate(-dx, -dy);
 		this.scale(factor);
 
+	}
+	
+	// translates this camera to the given point
+	public void translateTo(double x, double y) {
+		this.translateX = x;
+		this.translateY = y;
 	}
 
 	// returns the value of the x-translation

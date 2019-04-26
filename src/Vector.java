@@ -6,18 +6,34 @@ import java.awt.geom.Line2D;
 
 public abstract class Vector {
 
+	private static final double ARROW_TO_ARROW_HEAD_SCALE = 1 / 8.0;
+
 	protected final Color color;
 	protected final double xComponent;
 	protected final double yComponent;
 	protected final double length;
 	protected final double theta; // in radians
 
+	private final double arrowHeadLength;
+
+	// constructs a vector with the given values
 	Vector(double xComponent, double yComponent, double length, double theta, Color color) {
 		this.xComponent = xComponent;
 		this.yComponent = yComponent;
 		this.length = length;
 		this.theta = this.normalizeAngle(theta);
 		this.color = color;
+		this.arrowHeadLength = this.length * ARROW_TO_ARROW_HEAD_SCALE;
+	}
+
+	// constructs a copy of the given vector
+	Vector(Vector v) {
+		this.xComponent = v.getXComponent();
+		this.yComponent = v.getYComponent();
+		this.length = v.getLength();
+		this.theta = v.getAngle();
+		this.color = this.generateRandomColor();
+		this.arrowHeadLength = this.length * ARROW_TO_ARROW_HEAD_SCALE;
 	}
 
 	// returns the negation of this vector
@@ -56,11 +72,11 @@ public abstract class Vector {
 		}
 		Graphics2D g2 = (Graphics2D) g;
 		float scale = (float) Math.sqrt(Math.abs(g2.getTransform().getDeterminant()));
-		//System.out.println("Scale: " + scale);
+		// System.out.println("Scale: " + scale);
 
 		// sets paintbrush to this vector's corresponding characteristics
 		g2.setColor(this.color);
-		g2.setStroke(new BasicStroke(2.5f/scale));
+		g2.setStroke(new BasicStroke(2.5f / scale));
 
 		// draws arrow stem
 		g2.draw(new Line2D.Double(0, 0, (this.xComponent * scale), (this.yComponent * scale)));
@@ -68,14 +84,40 @@ public abstract class Vector {
 		// draws arrow head PI/8 radians from terminal line
 		g2.draw(new Line2D.Double((this.xComponent * scale), (this.yComponent * scale),
 				((this.xComponent * scale)
-						+ scale * this.length / 8 * Math.cos(this.theta + Math.PI - (Math.PI / 8))),
-				((this.yComponent * scale)
-						+ scale * this.length / 8 * Math.sin(this.theta + Math.PI - (Math.PI / 8)))));
+						+ scale * arrowHeadLength * Math.cos(this.theta + Math.PI - (Math.PI / 8))),
+				((this.yComponent * scale) + scale * arrowHeadLength
+						* Math.sin(this.theta + Math.PI - (Math.PI / 8)))));
 		g2.draw(new Line2D.Double((this.xComponent * scale), (this.yComponent * scale),
 				((this.xComponent * scale)
-						+ scale * this.length / 8 * Math.cos(this.theta + Math.PI + (Math.PI / 8))),
-				((this.yComponent * scale)
-						+ scale * this.length / 8 * Math.sin(this.theta + Math.PI + (Math.PI / 8)))));
+						+ scale * arrowHeadLength * Math.cos(this.theta + Math.PI + (Math.PI / 8))),
+				((this.yComponent * scale) + scale * arrowHeadLength
+						* Math.sin(this.theta + Math.PI + (Math.PI / 8)))));
+	}
+
+	// returns the x-component of this vector
+	public double getXComponent() {
+		return this.xComponent;
+	}
+
+	// returns the y-component of this vector
+	public double getYComponent() {
+		return this.yComponent;
+	}
+
+	// returns the length of this vector
+	public double getLength() {
+		return this.length;
+	}
+
+	// returns the angle in radians of this vector
+	public double getAngle() {
+		return this.theta;
+	}
+	
+	// generates a random color
+	protected static Color generateRandomColor() {
+		return new Color((int) (190 * Math.random()) + 45, (int) (190 * Math.random()) + 45,
+				(int) (190 * Math.random()) + 45);
 	}
 
 }

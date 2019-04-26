@@ -6,8 +6,7 @@ public class CartesianVector extends Vector {
 	//creates a cartesian vector with a random color
 	public CartesianVector(double xComponent, double yComponent) {
 		super(xComponent, yComponent, Math.hypot(xComponent, yComponent),
-				Math.atan2(yComponent, xComponent), new Color((int) (190 * Math.random()) + 45,
-						(int) (190 * Math.random()) + 45, (int) (190 * Math.random()) + 45));
+				Math.atan2(yComponent, xComponent), Vector.generateRandomColor());
 	}
 
 	//convenience constructors

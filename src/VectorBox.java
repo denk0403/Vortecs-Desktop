@@ -12,9 +12,17 @@ public class VectorBox extends JPanel implements InputBox {
 	Vector vector; // vector represented by vector box
 	CloseBoxButton closeButton;
 
-	// creates a vector box with simple vector
+	// creates a vector box with the zero vector
 	VectorBox() {
 		this.vector = new CartesianVector(0, 0);
+		this.closeButton = new CloseBoxButton(this);
+		this.initComponents();
+		this.add(new JTextField("Test"));
+	}
+	
+	// creates a vector box with the given vector
+	VectorBox(Vector v) {
+		this.vector = v;
 		this.closeButton = new CloseBoxButton(this);
 		this.initComponents();
 		this.add(new JTextField("Test"));

@@ -1,5 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +23,31 @@ public class Application {
 		//frame.setMinimumSize(new Dimension(300, 100));
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if ((e.getKeyCode() == KeyEvent.VK_Z)) {
+					System.out.println("hi");
+					Undo.getInstance().undo();
+				}
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
+					System.out.println("hi");
+					Undo.getInstance().undo();
+				}
+			}
+		});
 
 		// innerPanel set-up
 		JPanel innerPanel = new JPanel(new BorderLayout());
