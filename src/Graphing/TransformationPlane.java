@@ -80,14 +80,14 @@ public class TransformationPlane implements Transformable {
 		}
 
 		// draws vector inputs
-		InputBoxContainer.getInstance().drawInputs(g);
+		InputBoxContainer.getInstance().drawInputs(g, this.getMatrix());
 	}
 
 	// displays this plane on the given graphics object using the camera
 	public void display(Graphics g, Camera camera, Display display) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.transform(camera.getTransform());
-		g2.transform(this.getMatrix().getAsAffineTransform());
+		//g2.transform(this.getMatrix().getAsAffineTransform());
 
 		// gets drawing scale of graphics object
 		float realScale = (float) Math.sqrt(camera.getScale());
@@ -142,44 +142,56 @@ public class TransformationPlane implements Transformable {
 						Math.abs(this.matrix.getSecondColumn().getYComponent()) <= 0.001 ? 1
 								: this.matrix.getSecondColumn().getYComponent()))
 				/ gridInterval / (Math.abs(this.matrix.getDeterminant()) <= 0.001 ? 1 : this.matrix.getDeterminant()));
-		System.out.println(NUM_OF_GRID_LINES);
+		//System.out.println(NUM_OF_GRID_LINES);
 
-		// draws horizontal grid lines
+		Vector v1;
+		Vector v2;
+		// draws horizontal grid lines with matrix transformation applied
 		for (int row = -NUM_OF_GRID_LINES + yShift; row <= NUM_OF_GRID_LINES + yShift; row += 1) {
+			v1 = new CartesianVector((-NUM_OF_GRID_LINES + xShift) * artScale, row * artScale);
+			v1 = this.matrix.transform(v1);
+			v2 = new CartesianVector((NUM_OF_GRID_LINES + xShift) * artScale, row * artScale);
+			v2 = this.matrix.transform(v2);
 			if (row == 0) {
 				g2.setStroke(new BasicStroke(3f / realScale));
-				g2.draw(new Line2D.Double((-NUM_OF_GRID_LINES + xShift) * artScale, row * artScale,
-						(NUM_OF_GRID_LINES + xShift) * artScale, row * artScale));
+				g2.draw(new Line2D.Double(v1.getXComponent(), v1.getYComponent(),
+						v2.getXComponent(), v2.getYComponent()));
 				g2.setStroke(new BasicStroke(1.5f / realScale));
 			} else {
-				g2.draw(new Line2D.Double((-NUM_OF_GRID_LINES + xShift) * artScale, row * artScale,
-						(NUM_OF_GRID_LINES + xShift) * artScale, row * artScale));
+				g2.draw(new Line2D.Double(v1.getXComponent(), v1.getYComponent(),
+						v2.getXComponent(), v2.getYComponent()));
 			}
 
 		}
 
-		// draws vertical grid lines
+		// draws vertical grid lines with matrix transformation applied
 		for (int col = -NUM_OF_GRID_LINES + xShift; col <= NUM_OF_GRID_LINES + xShift; col += 1) {
+			v1 = new CartesianVector(col * artScale, (-NUM_OF_GRID_LINES + yShift) * artScale);
+			v1 = this.matrix.transform(v1);
+			v2 = new CartesianVector(col * artScale, (NUM_OF_GRID_LINES + yShift) * artScale);
+			v2 = this.matrix.transform(v2);
 			if (col == 0) {
 				g2.setStroke(new BasicStroke(3f / realScale));
-				g2.draw(new Line2D.Double(col * artScale, (-NUM_OF_GRID_LINES + yShift) * artScale,
-						col * artScale, (NUM_OF_GRID_LINES + yShift) * artScale));
+				g2.draw(new Line2D.Double(v1.getXComponent(), v1.getYComponent(),
+						v2.getXComponent(), v2.getYComponent()));
 				g2.setStroke(new BasicStroke(1.5f / realScale));
 			} else {
-				g2.draw(new Line2D.Double(col * artScale, (-NUM_OF_GRID_LINES + yShift) * artScale,
-						col * artScale, (NUM_OF_GRID_LINES + yShift) * artScale));
+				g2.draw(new Line2D.Double(v1.getXComponent(), v1.getYComponent(),
+						v2.getXComponent(), v2.getYComponent()));
 			}
 
 		}
 
 		// draws vector inputs
-		InputBoxContainer.getInstance().drawInputs(g2);
+		InputBoxContainer.getInstance().drawInputs(g2, this.getMatrix());
 
 	}
 
 	// transforms this transformable
 	public void transform(Matrix2D m) {
-		this.matrix = m.applyTransformOn(this.matrix);
+		System.out.print("transforming here");
+		System.out.println(m);
+		this.setMatrix(m.applyTransformOn(this.getMatrix()));
 	}
 
 	// returns the matrix of this transformable

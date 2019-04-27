@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
+import Matrices.Matrix2D;
+
 public abstract class Vector {
 
 	private static final double ARROW_TO_ARROW_HEAD_SCALE = 1 / 8.0;
@@ -67,7 +69,7 @@ public abstract class Vector {
 		}
 	}
 
-	// draws self onto center of given graphics object
+	// draws this vector onto center of given graphics object
 	public void drawSelf(Graphics g) {
 		if (this.length <= 0.0001) {
 			return;
@@ -93,6 +95,12 @@ public abstract class Vector {
 						+ scale * arrowHeadLength * Math.cos(this.theta + Math.PI + (Math.PI / 8))),
 				((this.yComponent * scale) + scale * arrowHeadLength
 						* Math.sin(this.theta + Math.PI + (Math.PI / 8)))));
+	}
+
+	// draws this vector onto center of given graphics object according to the given
+	// matrix
+	public void drawSelf(Graphics g, Matrix2D m) {
+		m.transform(this).drawSelf(g);
 	}
 
 	// returns the x-component of this vector
@@ -126,6 +134,7 @@ public abstract class Vector {
 				(int) (190 * Math.random()) + 45);
 	}
 
+	// generates a random vector between the given minimum size and maximum size
 	public static Vector generateRandomVector(int minSize, int maxSize) {
 		return new PolarVector((maxSize - minSize) * Math.random() + minSize,
 				2 * Math.PI * Math.random() - Math.PI);
@@ -133,7 +142,7 @@ public abstract class Vector {
 
 	// returns the dot product of this vector and a given vector
 	public double dotProduct(Vector v) {
-		return this.getXComponent() * v.getXComponent() + this.getYComponent() * v.getYComponent();
+		return (this.getXComponent() * v.getXComponent()) + (this.getYComponent() * v.getYComponent());
 	}
 
 	// returns the vector sum of this vector and the given vector
@@ -146,6 +155,13 @@ public abstract class Vector {
 	public Vector scale(double scalar) {
 		return new PolarVector(this.getXComponent() * scalar, this.getYComponent() * scalar,
 				this.getLength() * scalar, this.getAngle(), Vector.generateRandomColor());
+	}
+
+	// returns a string representation of this vector
+	public String toString() {
+		return "Vector:" + "\n\tX: " + this.getXComponent() + "\n\tY: " + this.getYComponent()
+				+ "\n\tLength: " + this.getLength() + "\n\tAngle: " + this.getAngle() + " ("
+				+ Math.toDegrees(this.getAngle()) + "º)";
 	}
 
 }

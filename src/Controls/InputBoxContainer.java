@@ -63,9 +63,9 @@ public class InputBoxContainer extends JPanel {
 	}
 
 	// draws all the items in the container
-	public void drawInputs(Graphics g) {
+	public void drawInputs(Graphics g, Matrix2D m) {
 		for (InputBox box : boxes) {
-			box.drawItem(g);
+			box.drawItem(g, m);
 		}
 	}
 

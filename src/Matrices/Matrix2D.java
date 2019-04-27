@@ -104,6 +104,16 @@ public class Matrix2D {
 		return this.rv2;
 	}
 
+	// returns a string representation of this matrix
+	public String toString() {
+		return "Matrix:" + "\n\t[ " + this.getFirstRow().getXComponent() + " "
+				+ this.getFirstRow().getYComponent() + " ]\n\t[ "
+				+ this.getSecondRow().getXComponent() + " " + this.getSecondRow().getYComponent()
+				+ " ]";
+	}
+
+	@Deprecated
+	// returns the AffineTransform represented by this matrix
 	public AffineTransform getAsAffineTransform() {
 		return new AffineTransform(Math.sqrt(this.getFirstColumn().getXComponent()),
 				this.getFirstColumn().getYComponent(), this.getSecondColumn().getXComponent(),

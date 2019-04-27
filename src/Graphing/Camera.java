@@ -64,13 +64,10 @@ public class Camera {
 				new double[] { Math.sqrt(this.scale), 0, 0, -Math.sqrt(this.scale), this.translateX, this.translateY });
 	}
 	
-	@Override
 	// returns a String representation of this Camera
 	public String toString() {
-		return "Camera:"
-				+ "\n\tX-Translate: " + this.translateX
-				+ "\n\tY-Translate: " + this.translateY
-				+ "\n\tScale: " + this.scale;
+		return "Camera:" + "\n\tX-Translate: " + this.translateX + "\n\tY-Translate: "
+				+ this.translateY + "\n\tScale: " + this.scale;
 				
 	}
 

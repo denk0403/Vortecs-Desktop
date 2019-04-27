@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Matrices.Matrix2D;
 import Vectors.CartesianVector;
 import Vectors.Vector;
 
@@ -61,9 +62,9 @@ public class VectorBox extends JPanel implements InputBox {
 	}
 
 	// draws the box's item onto the given graphics object
-	public void drawItem(Graphics g) {
+	public void drawItem(Graphics g, Matrix2D m) {
 		//System.out.println("Drawing Vector!");
-		vector.drawSelf(g);
+		vector.drawSelf(g, m);
 	}
 
 	// updates the x-component of the corresponding vector

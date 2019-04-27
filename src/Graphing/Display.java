@@ -266,12 +266,30 @@ public class Display extends JComponent {
 				Display.this.repaint();
 			}
 		});
-		JMenuItem project = new JMenuItem("Project onto X-Axis");
-		project.addActionListener(new ActionListener() {
+		JMenuItem projectX = new JMenuItem("Project onto X-Axis");
+		projectX.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((Transformable)(Display.this.item)).transform(new Matrix2D(1, 1, 1, 1));
+				((Transformable)(Display.this.item)).transform(new Matrix2D(1, 0, 0, 0));
+				Display.this.repaint();
+			}
+		});
+		JMenuItem projectY = new JMenuItem("Project onto Y-Axis");
+		projectY.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((Transformable)(Display.this.item)).transform(new Matrix2D(0, 0, 0, 1));
+				Display.this.repaint();
+			}
+		});
+		JMenuItem projectXY = new JMenuItem("Project onto Y = X");
+		projectXY.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((Transformable)(Display.this.item)).transform(new Matrix2D(1/2.0, 1/2.0, 1/2.0, 1/2.0));
 				Display.this.repaint();
 			}
 		});
@@ -297,7 +315,9 @@ public class Display extends JComponent {
 		rightClickMenu.addSeparator();
 		rightClickMenu.add(slant);
 		rightClickMenu.add(slantOther);
-		rightClickMenu.add(project);
+		rightClickMenu.add(projectX);
+		rightClickMenu.add(projectY);
+		rightClickMenu.add(projectXY);
 		rightClickMenu.add(resetMat);
 		
 		
