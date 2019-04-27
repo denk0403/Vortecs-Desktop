@@ -7,6 +7,13 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import Controls.ControlPanel;
+import Controls.InputBoxContainer;
+import Controls.VectorBox;
+import Graphing.Display;
+import Graphing.TransformationPlane;
+import Vectors.Vector;
+
 // the entire application essentially
 public class Application {
 
@@ -19,11 +26,20 @@ public class Application {
 
 		// frame set-up
 		JFrame frame = new JFrame("Grapher 3.0");
-		frame.setPreferredSize(new Dimension(800, 600));
-		// frame.setMinimumSize(new Dimension(300, 100));
+		frame.setPreferredSize(new Dimension(900, 900));
+		frame.setMinimumSize(new Dimension(250, 250));
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		
+
+		// innerPanel set-up
+		JPanel innerPanel = new JPanel(new BorderLayout());
+		ControlPanel controls = new ControlPanel();
+		Display screen = new Display(new TransformationPlane(), 900, 900);
+		// innerPanel.add(controls, BorderLayout.WEST);
+		innerPanel.add(screen, BorderLayout.CENTER);
+		
 		frame.addKeyListener(new KeyListener() {
 
 			@Override
@@ -40,18 +56,18 @@ public class Application {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
+						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) && e.isShiftDown()) {
+					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(10, 35)));
+					screen.repaint();
+					
+				}
+				else if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
 						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
-					//// Will undo
+					InputBoxContainer.getInstance().removeLast();
+					screen.repaint();
 				}
 			}
 		});
-
-		// innerPanel set-up
-		JPanel innerPanel = new JPanel(new BorderLayout());
-		ControlPanel controls = new ControlPanel();
-		Display screen = new Display(new TransformationPlane(), 800, 600);
-		// innerPanel.add(controls, BorderLayout.WEST);
-		innerPanel.add(screen, BorderLayout.CENTER);
 
 		//////////////////////////////////////////////
 		frame.add(innerPanel);
