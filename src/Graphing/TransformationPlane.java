@@ -17,6 +17,7 @@ import Vectors.Vector;
 
 public class TransformationPlane implements Transformable {
 
+	public static final int MAX_NUM_OF_GRID_LINES = 1000;
 	public static int NUM_OF_GRID_LINES = 10;
 	private Matrix2D matrix;
 
@@ -87,7 +88,7 @@ public class TransformationPlane implements Transformable {
 	public void display(Graphics g, Camera camera, Display display) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.transform(camera.getTransform());
-		//g2.transform(this.getMatrix().getAsAffineTransform());
+		// g2.transform(this.getMatrix().getAsAffineTransform());
 
 		// gets drawing scale of graphics object
 		float realScale = (float) Math.sqrt(camera.getScale());
@@ -118,34 +119,27 @@ public class TransformationPlane implements Transformable {
 		// adjusts to work with different basis vectors
 		Vector v = new CartesianVector(xShift, yShift);
 		try {
+
 			v = this.matrix.getInverse().transform(v);
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		xShift = (int) Math.round(v.getXComponent());
 		yShift = (int) Math.round(v.getYComponent());
 
 		// adjusts the # of grid lines needed for the given display size and basis
 		// vectors
-		// - The math is based on dividing out the distortion of the plane on the width
-		// - and height of the display, and then figuring out which of those is greater,
-		// - and using the determinant to scale further
-		NUM_OF_GRID_LINES = (int) (Math.max(
-				display.getWidth() / Math.min(
-						Math.abs(this.matrix.getFirstColumn().getXComponent()) <= 0.001 ? 1
-								: this.matrix.getFirstColumn().getXComponent(),
-						Math.abs(this.matrix.getSecondColumn().getXComponent()) <= 0.001 ? 1
-								: this.matrix.getSecondColumn().getXComponent()),
-				display.getHeight() / Math.min(
-						Math.abs(this.matrix.getFirstColumn().getYComponent()) <= 0.001 ? 1
-								: this.matrix.getFirstColumn().getYComponent(),
-						Math.abs(this.matrix.getSecondColumn().getYComponent()) <= 0.001 ? 1
-								: this.matrix.getSecondColumn().getYComponent()))
-				/ gridInterval / (Math.abs(this.matrix.getDeterminant()) <= 0.001 ? 1 : this.matrix.getDeterminant()));
-		//System.out.println(NUM_OF_GRID_LINES);
+		v = new CartesianVector(display.getWidth(), display.getHeight());
+		v = this.matrix.transform(v);
+		NUM_OF_GRID_LINES = (int) Math.min(MAX_NUM_OF_GRID_LINES,
+				(Math.max(v.getXComponent(), v.getYComponent()) / gridInterval
+						/ TransformationPlane.minRecip(this.matrix.getDeterminant()) /2 + 2));
+		System.out.println(NUM_OF_GRID_LINES);
 
+		// temporary variables for transforming grid lines
 		Vector v1;
 		Vector v2;
+
 		// draws horizontal grid lines with matrix transformation applied
 		for (int row = -NUM_OF_GRID_LINES + yShift; row <= NUM_OF_GRID_LINES + yShift; row += 1) {
 			v1 = new CartesianVector((-NUM_OF_GRID_LINES + xShift) * artScale, row * artScale);
@@ -189,8 +183,7 @@ public class TransformationPlane implements Transformable {
 
 	// transforms this transformable
 	public void transform(Matrix2D m) {
-		System.out.print("transforming here");
-		System.out.println(m);
+		System.out.println(m.applyTransformOn(this.getMatrix()));
 		this.setMatrix(m.applyTransformOn(this.getMatrix()));
 	}
 
@@ -198,10 +191,18 @@ public class TransformationPlane implements Transformable {
 	public Matrix2D getMatrix() {
 		return this.matrix;
 	}
-	
+
 	// sets this transformable's matrix to the given one
 	public void setMatrix(Matrix2D m) {
 		this.matrix = m;
+	}
+
+	// helper method for returning the smaller reciprocal
+	private static double minRecip(double num) {
+		if (num < 1 / num) {
+			return num;
+		}
+		return 1 / num;
 	}
 
 }

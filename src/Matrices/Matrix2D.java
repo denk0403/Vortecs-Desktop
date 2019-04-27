@@ -40,6 +40,7 @@ public class Matrix2D {
 	// returns a new matrix with the given matrix multiplied on this matrix
 	// [A].transform([B]) => [B][A]
 	public Matrix2D transform(Matrix2D b) {
+		System.out.println("Deter: " + this.getDeterminant());
 		return new Matrix2D(b.transform(this.cv1), b.transform(this.cv2));
 	}
 
