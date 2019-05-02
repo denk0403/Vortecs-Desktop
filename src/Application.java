@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import Controls.ControlPanel;
@@ -30,6 +32,12 @@ public class Application {
 		frame.setMinimumSize(new Dimension(250, 250));
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		/*
+		JMenuBar bar = new JMenuBar();
+		bar.add(new JMenu("hello", true));
+		frame.setJMenuBar(bar);
+		*/
 
 		
 
@@ -37,7 +45,7 @@ public class Application {
 		JPanel innerPanel = new JPanel(new BorderLayout());
 		ControlPanel controls = new ControlPanel();
 		Display screen = new Display(new TransformationPlane(), 900, 900);
-		// innerPanel.add(controls, BorderLayout.WEST);
+		//innerPanel.add(controls, BorderLayout.WEST);
 		innerPanel.add(screen, BorderLayout.CENTER);
 		
 		frame.addKeyListener(new KeyListener() {
@@ -57,7 +65,7 @@ public class Application {
 			public void keyPressed(KeyEvent e) {
 				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
 						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) && e.isShiftDown()) {
-					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(10, 35)));
+					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(1, 1)));
 					screen.repaint();
 					
 				}
