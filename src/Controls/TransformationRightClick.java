@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import Graphing.AnimateTransform;
 import Graphing.Display;
 import Graphing.Transformable;
 import Graphing.TransformationPlane;
@@ -15,7 +16,7 @@ import Vectors.Vector;
 public class TransformationRightClick extends JPopupMenu {
 
 	private final Display display;
-	private final TransformationPlane plane;
+	private TransformationPlane plane;
 	
 	public TransformationRightClick(Display display, TransformationPlane plane) {
 		this.display = display;
@@ -108,7 +109,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(new Matrix2D(1,1,1,2));
+				display.item = new AnimateTransform(plane, new Matrix2D(1,1,1,2));
 				display.repaint();
 			}
 		});
@@ -118,7 +119,7 @@ public class TransformationRightClick extends JPopupMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					plane.transform((new Matrix2D(1,1, 1, 2)).getInverse());
+					display.item = new AnimateTransform(plane, (new Matrix2D(1,1, 1, 2)).getInverse());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -131,7 +132,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(Matrix2D.PROJECT_X_MATRIX);
+				display.item = new AnimateTransform(plane, Matrix2D.PROJECT_X_MATRIX);
 				display.repaint();
 			}
 		});
@@ -140,7 +141,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(Matrix2D.PROJECT_Y_MATRIX);
+				display.item = new AnimateTransform(plane, Matrix2D.PROJECT_Y_MATRIX);
 				display.repaint();
 			}
 		});
@@ -149,7 +150,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(new Matrix2D(1/2.0, 1/2.0, 1/2.0, 1/2.0));
+				display.item = new AnimateTransform(plane, new Matrix2D(1/2.0, 1/2.0, 1/2.0, 1/2.0));
 				display.repaint();
 			}
 		});
@@ -158,7 +159,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(Matrix2D.REFLECT_OVER_X_MATRIX);
+				display.item = new AnimateTransform(plane, Matrix2D.REFLECT_OVER_X_MATRIX);
 				display.repaint();
 			}
 		});
@@ -167,7 +168,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(Matrix2D.REFLECT_OVER_Y_MATRIX);
+				display.item = new AnimateTransform(plane, Matrix2D.REFLECT_OVER_Y_MATRIX);
 				display.repaint();
 			}
 		});
@@ -176,7 +177,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.transform(Matrix2D.FLIP_XY_MATRIX);
+				display.item = new AnimateTransform(plane, Matrix2D.FLIP_XY_MATRIX);
 				display.repaint();
 			}
 		});
@@ -185,7 +186,8 @@ public class TransformationRightClick extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				plane.setMatrix(Matrix2D.IDENTITY_MATRIX);
+				plane = new TransformationPlane();
+				display.item = plane;
 				display.repaint();
 			}
 		});

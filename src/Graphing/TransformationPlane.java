@@ -37,6 +37,14 @@ public class TransformationPlane implements Transformable {
 	public TransformationPlane() {
 		this.matrix = new Matrix2D(1, 0, 0, 1);
 	}
+	
+	/** 
+	 * Creates a Transformation plane with the given basis
+	 * @param m The basis of the plane
+	 */
+	public TransformationPlane(Matrix2D m) {
+		this.matrix = m;
+	}
 
 	/**
 	 * Displays this plane on the given graphics object.

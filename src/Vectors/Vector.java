@@ -317,10 +317,21 @@ public abstract class Vector {
 		double u2 = v.getYComponent();
 		return new Matrix2D(u1 * u1 - u2 * u2, 2 * u1 * u2, 2 * u1 * u2, u2 * u2 - u1 * u1);
 	}
-	
+
+	/**
+	 * Two vectors are said to be linearly independent if they are not scalar
+	 * multiples of each other
+	 * 
+	 * @param v The vector that is checked for linear independence from this vector
+	 * @return A boolean denoting whether the given vector is linearly independent
+	 *         from this vector
+	 */
 	public boolean linearlyIndependent(Vector v) {
 		if (this.getXComponent() == 0 ^ v.getXComponent() == 0) {
 			return true;
+		}
+		if (this.getXComponent() == 0 && v.getXComponent() == 0) {
+			return false;
 		}
 		double mult = this.getXComponent() / v.getXComponent();
 		if (v.scale(mult).equals(this)) {

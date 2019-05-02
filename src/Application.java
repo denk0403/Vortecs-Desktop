@@ -65,7 +65,7 @@ public class Application {
 			public void keyPressed(KeyEvent e) {
 				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
 						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) && e.isShiftDown()) {
-					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(1, 1)));
+					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(1, 15)));
 					screen.repaint();
 					
 				}

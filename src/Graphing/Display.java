@@ -19,7 +19,7 @@ import Controls.TransformationRightClick;
 public class Display extends JComponent {
 
 	Camera camera;
-	Displayable item;
+	public Displayable item;
 	int width;
 	int height;
 	double centerX;
