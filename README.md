@@ -14,7 +14,7 @@ Vortecs *(an anagram of "Vectors")* is a free, offline, and simple education too
 ![image](https://user-images.githubusercontent.com/3473945/57188461-20d9b380-6ecd-11e9-941d-1f7670081f60.png)
  
  # Download
- Download the Runnable JAR file [here](https://drive.google.com/uc?export=download&id=1XN24E-9drJ4RyT7Lsf1913K7O97MKvXl).
+ Download the Runnable JAR file [here](https://drive.google.com/uc?export=download&id=1XN24E-9drJ4RyT7Lsf1913K7O97MKvXl). (Requires Java SE 8)
  
 # Mobile Version
 The mobile version of this app is in development using Swift, and its progress can be monitored [here](https://github.com/jrosen081/Vortecs).
