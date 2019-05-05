@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import Controls.MatrixSelect.MatrixSelection;
 import Graphing.AnimateTransform;
 import Graphing.Display;
 import Graphing.Transformable;
@@ -17,7 +18,7 @@ public class TransformationRightClick extends JPopupMenu {
 
 	private final Display display;
 	private TransformationPlane plane;
-	
+
 	public TransformationRightClick(Display display, TransformationPlane plane) {
 		this.display = display;
 		this.plane = plane;
@@ -25,8 +26,9 @@ public class TransformationRightClick extends JPopupMenu {
 	}
 
 	private void initComponents() {
-		
+
 		JMenuItem recenter = new JMenuItem("Recenter View");
+		recenter.setToolTipText("Recenters camera at (0,0) with current zoom");
 		recenter.addActionListener(new ActionListener() {
 
 			@Override
@@ -36,6 +38,7 @@ public class TransformationRightClick extends JPopupMenu {
 			}
 		});
 		JMenuItem reset = new JMenuItem("Reset View");
+		reset.setToolTipText("Recenters camera at (0,0) with default zoom");
 		reset.addActionListener(new ActionListener() {
 
 			@Override
@@ -44,173 +47,44 @@ public class TransformationRightClick extends JPopupMenu {
 				display.repaint();
 			}
 		});
-		JMenuItem addVector = new JMenuItem("Add Random Vector");
-		addVector.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				InputBoxContainer.getInstance().addInputBox(new VectorBox(
-						Vector.generateRandomVector(1, 1)));
-				display.repaint();
-			}
-		});
-		JMenuItem undoVector = new JMenuItem("Undo Last Vector");
-		undoVector.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				InputBoxContainer.getInstance().removeLast();
-				display.repaint();
-			}
-		});
-		JMenuItem clearAll = new JMenuItem("Clear All Vectors");
-		clearAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				InputBoxContainer.getInstance().reset();
-				display.repaint();
-			}
-		});
-		// TEMP!!!!!
-		JMenuItem xyFlip = new JMenuItem("Flip X and Y Coordinates");
-		xyFlip.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				InputBoxContainer.getInstance().applyToAll(Matrix2D.FLIP_XY_MATRIX);
-				display.repaint();
-			}
-		});
-		JMenuItem rotateAllP = new JMenuItem("Rotate All Vectors 90º");
-		rotateAllP.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				InputBoxContainer.getInstance().applyToAll(Matrix2D.ROTATE_90_MATRIX);;
-				display.repaint();
-			}
-		});
-		JMenuItem rotateAllN = new JMenuItem("Rotate All Vectors -90º");
-		rotateAllN.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					InputBoxContainer.getInstance().applyToAll(Matrix2D.ROTATE_90_MATRIX.getInverse());
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				};
-				display.repaint();
-			}
-		});
-		JMenuItem slant = new JMenuItem("Slant Plane");
-		slant.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, new Matrix2D(1,1,1,2));
-				display.repaint();
-			}
-		});
-		JMenuItem slantOther = new JMenuItem("Slant Plane Other Way");
-		slantOther.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					display.item = new AnimateTransform(plane, (new Matrix2D(1,1, 1, 2)).getInverse());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				display.repaint();
-			}
-		});
-		JMenuItem projectX = new JMenuItem("Project onto X-Axis");
-		projectX.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, Matrix2D.PROJECT_X_MATRIX);
-				display.repaint();
-			}
-		});
-		JMenuItem projectY = new JMenuItem("Project onto Y-Axis");
-		projectY.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, Matrix2D.PROJECT_Y_MATRIX);
-				display.repaint();
-			}
-		});
-		JMenuItem projectXY = new JMenuItem("Project onto Y = X");
-		projectXY.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, new Matrix2D(1/2.0, 1/2.0, 1/2.0, 1/2.0));
-				display.repaint();
-			}
-		});
-		JMenuItem reflectX = new JMenuItem("Reflect Over X-axis");
-		reflectX.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, Matrix2D.REFLECT_OVER_X_MATRIX);
-				display.repaint();
-			}
-		});
-		JMenuItem reflectY = new JMenuItem("Reflect Over Y-axis");
-		reflectY.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, Matrix2D.REFLECT_OVER_Y_MATRIX);
-				display.repaint();
-			}
-		});
-		JMenuItem reflectXY = new JMenuItem("Reflect Over Y = X");
-		reflectXY.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				display.item = new AnimateTransform(plane, Matrix2D.FLIP_XY_MATRIX);
-				display.repaint();
-			}
-		});
 		JMenuItem resetMat = new JMenuItem("Reset Basis");
+		resetMat.setToolTipText("Undoes any transformations that have not been \"comitted\"");
 		resetMat.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				plane = new TransformationPlane();
-				display.item = plane;
+				display.setItem(plane);
 				display.repaint();
 			}
 		});
+		JMenuItem custom = new JMenuItem("Apply Transformation...");
+		custom.setToolTipText("Opens up menu of transformations");
+		custom.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MatrixSelection(display, plane);
+			}
+		});
+		JMenuItem fixCoor = new JMenuItem("Commit Transformation");
+		fixCoor.setToolTipText("Commits transformation on vectors while reseting the basis");
+		fixCoor.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InputBoxContainer.getInstance().applyToAll(plane.getMatrix());
+				resetMat.doClick();
+			}
+		});
+		
+		
 		this.add(recenter);
 		this.add(reset);
 		this.addSeparator();
-		this.add(addVector);
-		this.add(undoVector);
-		this.add(clearAll);
-		this.addSeparator();
-		this.add(xyFlip);
-		this.add(rotateAllP);
-		this.add(rotateAllN);
-		this.addSeparator();
-		this.add(slant);
-		this.add(slantOther);
-		this.add(projectX);
-		this.add(projectY);
-		this.add(projectXY);
-		this.add(reflectX);
-		this.add(reflectY);
-		this.add(reflectXY);
+		this.add(custom);
+		this.add(fixCoor);
 		this.add(resetMat);
 	}
-	
+
 }

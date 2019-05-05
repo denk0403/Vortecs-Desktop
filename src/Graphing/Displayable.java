@@ -1,6 +1,8 @@
 package Graphing;
 import java.awt.Graphics;
 
+import javax.swing.JPopupMenu;
+
 /**
  * Represents a Displayable object to interact with the Display class
  * @author Dennis Kats
@@ -21,5 +23,7 @@ public interface Displayable {
 	 * @param display The display with this Displayable
 	 */
 	public void display(Graphics g, Camera camera, Display display);
+	
+	public JPopupMenu getRightClickMenu(Display display);
 
 }

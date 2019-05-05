@@ -28,6 +28,8 @@ public class MatrixTest extends Tester {
 		testTransformMatrix();
 		testGetDeterminant();
 		testRotation();
+		testRREF();
+		// testLinearlyIndependent();
 		try {
 			testGetInverse();
 			testProjection();
@@ -444,8 +446,7 @@ public class MatrixTest extends Tester {
 		test(Matrix2D.generateReflectionOver(1, 2), new Matrix2D(-3, 4, 4, 3).scale(1 / 5.0));
 		test(Matrix2D.generateReflectionOver(0), Matrix2D.REFLECT_OVER_X_MATRIX);
 		test(Matrix2D.generateReflectionOver(Math.PI / 2), Matrix2D.REFLECT_OVER_Y_MATRIX);
-		test(Matrix2D.generateReflectionOver(Math.PI / 4),
-				Matrix2D.FLIP_XY_MATRIX);
+		test(Matrix2D.generateReflectionOver(Math.PI / 4), Matrix2D.FLIP_XY_MATRIX);
 	}
 
 	/**
@@ -482,6 +483,54 @@ public class MatrixTest extends Tester {
 				new Matrix2D(-Math.sqrt(3), 1, -1, -Math.sqrt(3)).scale(0.5));
 		test(Matrix2D.generateRotationOf(Math.toRadians(180)), Matrix2D.NEGATION_MATRIX);
 
+	}
+
+	/**
+	 * Tests the rref method of matrices
+	 */
+	public static void testRREF() {
+		test(Matrix2D.IDENTITY_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.NEGATION_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.FLIP_XY_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.PROJECT_X_MATRIX.rref(), Matrix2D.PROJECT_X_MATRIX);
+		test(Matrix2D.PROJECT_Y_MATRIX.rref(), Matrix2D.PROJECT_X_MATRIX.swapColumns());
+		test(Matrix2D.REFLECT_OVER_X_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.REFLECT_OVER_Y_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.ROTATE_90_MATRIX.rref(), Matrix2D.IDENTITY_MATRIX);
+		test(Matrix2D.ZERO_MATRIX.rref(), Matrix2D.ZERO_MATRIX);
+	}
+
+	
+	public static void testLinearlyIndependent() {
+		test(Matrix2D.IDENTITY_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.NEGATION_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.FLIP_XY_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.PROJECT_X_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.PROJECT_Y_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.REFLECT_OVER_X_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.REFLECT_OVER_Y_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.ROTATE_90_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+		test(Matrix2D.ZERO_MATRIX.linearlyIndependent(Vector.ZERO_VECTOR), false);
+
+		test(Matrix2D.IDENTITY_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.NEGATION_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.FLIP_XY_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.PROJECT_X_MATRIX.linearlyIndependent(Vector.E1), false);
+		test(Matrix2D.PROJECT_Y_MATRIX.linearlyIndependent(Vector.E1), false);
+		test(Matrix2D.PROJECT_X_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.PROJECT_Y_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.REFLECT_OVER_X_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.REFLECT_OVER_Y_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.ROTATE_90_MATRIX.linearlyIndependent(Vector.E2), false);
+		test(Matrix2D.ZERO_MATRIX.linearlyIndependent(Vector.E2), false);
+
+		test(new Matrix2D(1,1,1,1).linearlyIndependent(new CartesianVector(1, 1)), false);
+		test(new Matrix2D(1, 1, 1, 1).linearlyIndependent(Vector.E1), true);
+		test(new Matrix2D(1, 1, -1, -1).linearlyIndependent(Vector.E1), true);
+		test(new Matrix2D(1, 1, 1, 1).linearlyIndependent(Vector.E2), true);
+		test(new Matrix2D(1, 1, -1, -1).linearlyIndependent(Vector.E2), true);
+		test(new Matrix2D(1,1,1,1).linearlyIndependent(new CartesianVector(3, 3)), false);
+		test(new Matrix2D(1,1,-2,-2).linearlyIndependent(new CartesianVector(3, 3)), false);
 	}
 
 }

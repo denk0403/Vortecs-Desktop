@@ -1,7 +1,10 @@
 package Graphing;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -9,14 +12,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
-import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
-import Controls.TransformationRightClick;
-
 // displayer for graph inputs
-public class Display extends JComponent {
+public class Display extends JPanel {
 
 	Camera camera;
 	public Displayable item;
@@ -43,11 +43,16 @@ public class Display extends JComponent {
 
 	// initializes components of Display
 	private void initComponents() {
+		
+		
+		this.setOpaque(true);
+		this.setBackground(Color.WHITE);
+		
 		//this.setMinimumSize(new Dimension(this.width, this.height));
 		this.setPreferredSize(new Dimension(this.width, this.height));
 		
 		// adds right-click menu
-		JPopupMenu rightClickMenu = new TransformationRightClick(this, (TransformationPlane) this.item);
+		JPopupMenu rightClickMenu = this.item.getRightClickMenu(this);
 		this.setComponentPopupMenu(rightClickMenu);
 		rightClickMenu.setInheritsPopupMenu(true);
 
@@ -126,7 +131,6 @@ public class Display extends JComponent {
 
 				// repaints the view to display the changes
 				Display.this.repaint();
-				System.out.println(camera); // temp
 			}
 
 		});
@@ -170,12 +174,19 @@ public class Display extends JComponent {
 		this.camera = new Camera(Display.this.width / 2, Display.this.height / 2,
 				Display.DEFAULT_SCALE);
 	}
+	
+	public void setItem(Displayable item) {
+		this.item = item;
+		JPopupMenu menu = this.item.getRightClickMenu(this);
+		menu.setInheritsPopupMenu(true);
+		this.setComponentPopupMenu(menu);
+	}
 
 	// draws the display
 	protected void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
+		super.paintComponent(g);
 
-		// NEEDS TO BE FIXED
+		Graphics2D g2 = (Graphics2D) g;
 		this.item.display(g2, this.camera, this);
 	}
 

@@ -1,7 +1,5 @@
 package Matrices;
 
-import java.awt.geom.AffineTransform;
-
 import Vectors.CartesianVector;
 import Vectors.PolarVector;
 import Vectors.Vector;
@@ -20,9 +18,11 @@ public class Matrix2D {
 	public static final Matrix2D NEGATION_MATRIX = new Matrix2D(-1, 0, 0, -1);
 	public static final Matrix2D PROJECT_X_MATRIX = new Matrix2D(1, 0, 0, 0);
 	public static final Matrix2D PROJECT_Y_MATRIX = new Matrix2D(0, 0, 0, 1);
+	public static final Matrix2D PROJECT_XY_MATRIX = new Matrix2D(1, 1, 1, 1).scale(0.5);
 	public static final Matrix2D REFLECT_OVER_X_MATRIX = new Matrix2D(1, 0, 0, -1);
 	public static final Matrix2D REFLECT_OVER_Y_MATRIX = new Matrix2D(-1, 0, 0, 1);
 	public static final Matrix2D ROTATE_90_MATRIX = new Matrix2D(0, 1, -1, 0);
+	public static final Matrix2D ROTATE_90_CW_MATRIX = new Matrix2D(0, -1, 1, 0);
 
 	private final Vector cv1, cv2; // columns vectors
 	private final Vector rv1, rv2; // row vectors
@@ -279,7 +279,7 @@ public class Matrix2D {
 	public static Matrix2D generateReflectionOver(double x, double y) throws Exception {
 		return new CartesianVector(x, y).getReflectionMatrix();
 	}
-	
+
 	/**
 	 * 
 	 * @param radians The angle in radians of the line from the positive x-axis
@@ -303,6 +303,55 @@ public class Matrix2D {
 	public static Matrix2D generateRotationOf(double radians) {
 		return new Matrix2D(Math.cos(radians), Math.sin(radians), -Math.sin(radians),
 				Math.cos(radians));
+	}
+
+	/**
+	 * 
+	 * @return The matrix with the rows swapped
+	 */
+	public Matrix2D swapRows() {
+		return new Matrix2D(this.cv1.flipXY(), this.cv2.flipXY());
+	}
+
+	/**
+	 * 
+	 * @return The matrix with the columns swapped
+	 */
+	public Matrix2D swapColumns() {
+		return new Matrix2D(this.cv2, this.cv1);
+	}
+
+	/**
+	 * 
+	 * @param v The vector being checked for linear independence from this basis
+	 * @return If the given vector is linearly independent from this basis
+	 */
+	// NEEDS WORK
+	public boolean linearlyIndependent(Vector v) {
+		return false;
+	}
+
+	/**
+	 * 
+	 * @return The Reduced Row-Echelon Form (rref) of this matrix
+	 */
+	public Matrix2D rref() {
+		if (this.getFirstRow().linearlyIndependent(this.getSecondRow())) {
+			return Matrix2D.IDENTITY_MATRIX;
+		} else {
+			if (this.equals(Matrix2D.ZERO_MATRIX)) {
+				return Matrix2D.ZERO_MATRIX;
+			}
+			if (this.getFirstColumn().getXComponent() == 0
+					&& this.getSecondColumn().getXComponent() == 0) {
+				return this.swapRows().rref();
+			}
+			if (this.getFirstColumn().getXComponent() == 0) {
+				return new Matrix2D(0, 0, 1, 0);
+			} else {
+				return new Matrix2D(1, 0, 0, 0);
+			}
+		}
 	}
 
 	/**
@@ -347,27 +396,27 @@ public class Matrix2D {
 			return false;
 		}
 		Matrix2D mat = (Matrix2D) obj;
-		return this.getFirstColumn().equals(mat.getFirstColumn())
-				&& this.getSecondColumn().equals(mat.getSecondColumn())
-				&& this.getFirstRow().equals(mat.getFirstRow())
-				&& this.getSecondRow().equals(mat.getSecondRow())
-				&& this.hashCode() == mat.hashCode();
+		Matrix2D diff = this.add(mat.scale(-1));
+		return diff.getFirstColumn().equals(Vector.ZERO_VECTOR)
+				&& diff.getSecondColumn().equals(Vector.ZERO_VECTOR)
+				&& diff.getFirstRow().equals(Vector.ZERO_VECTOR)
+				&& diff.getSecondRow().equals(Vector.ZERO_VECTOR);
+
+		// previous method for checking equality
+		/*
+		 * return this.getFirstColumn().equals(mat.getFirstColumn()) &&
+		 * this.getSecondColumn().equals(mat.getSecondColumn()) &&
+		 * this.getFirstRow().equals(mat.getFirstRow()) &&
+		 * this.getSecondRow().equals(mat.getSecondRow()) && this.hashCode() ==
+		 * mat.hashCode();
+		 */
 	}
 
+	/* BROKEN!! */
 	@Override
 	public int hashCode() {
 		return this.getFirstColumn().hashCode() + this.getSecondColumn().hashCode()
 				+ this.getFirstColumn().hashCode() + this.getSecondRow().hashCode();
-	}
-
-	/**
-	 * @return The AffineTransform represented by this matrix
-	 */
-	@Deprecated
-	public AffineTransform getAsAffineTransform() {
-		return new AffineTransform(Math.sqrt(this.getFirstColumn().getXComponent()),
-				this.getFirstColumn().getYComponent(), this.getSecondColumn().getXComponent(),
-				Math.sqrt(this.getSecondColumn().getYComponent()), 0, 0);
 	}
 
 }

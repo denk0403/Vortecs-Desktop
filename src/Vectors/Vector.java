@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
-import java.math.BigDecimal;
+import java.util.Random;
 
 import Matrices.Matrix2D;
 
@@ -197,13 +197,17 @@ public abstract class Vector {
 	public Color getColor() {
 		return this.color;
 	}
+	
+	public Vector setColor(Color color) {
+		return new CartesianVector(this.xComponent, this.yComponent, this.length, this.theta, color);
+	}
 
 	/**
 	 * @return Returns a random "nice" color
 	 */
 	protected static Color generateRandomColor() {
-		return new Color((int) (190 * Math.random()) + 45, (int) (190 * Math.random()) + 45,
-				(int) (190 * Math.random()) + 45);
+		Random rand = new Random();
+		return new Color(rand.nextInt(201) + 50, rand.nextInt(201) + 50, rand.nextInt(201) + 50);
 	}
 
 	/**
@@ -256,13 +260,13 @@ public abstract class Vector {
 	 */
 	public Vector scale(double scalar) {
 		if (this.isZeroVector() || scalar == 0) {
-			return new PolarVector(0, 0, 0, 0, Vector.generateRandomColor());
+			return new PolarVector(0, 0, 0, 0, this.getColor());
 		}
 		if (scalar < 0) {
 			return this.negate().scale(-scalar);
 		}
 		return new PolarVector(this.getXComponent() * scalar, this.getYComponent() * scalar,
-				this.getLength() * scalar, this.getAngle(), Vector.generateRandomColor());
+				this.getLength() * scalar, this.getAngle(), this.getColor());
 	}
 
 	/**
@@ -326,12 +330,16 @@ public abstract class Vector {
 	 * @return A boolean denoting whether the given vector is linearly independent
 	 *         from this vector
 	 */
+	// MAY NEED WORK
 	public boolean linearlyIndependent(Vector v) {
-		if (this.getXComponent() == 0 ^ v.getXComponent() == 0) {
-			return true;
+		if (this.equals(Vector.ZERO_VECTOR) || v.equals(Vector.ZERO_VECTOR)) {
+			return false;
 		}
 		if (this.getXComponent() == 0 && v.getXComponent() == 0) {
 			return false;
+		}
+		if (this.getXComponent() == 0 ^ v.getXComponent() == 0) {
+			return true;
 		}
 		double mult = this.getXComponent() / v.getXComponent();
 		if (v.scale(mult).equals(this)) {
@@ -360,7 +368,7 @@ public abstract class Vector {
 			return false;
 		}
 		Vector v = (Vector) obj;
-		return this.add(v.negate()).isZeroVector() && this.hashCode() == v.hashCode();
+		return this.add(v.negate()).isZeroVector();
 
 	}
 
@@ -382,6 +390,7 @@ public abstract class Vector {
 		return this.equals(obj) && ((Vector) obj).getColor() == this.getColor();
 	}
 
+	/* BROKEN */
 	@Override
 	public int hashCode() {
 		long sum = 0;
@@ -400,7 +409,7 @@ public abstract class Vector {
 	 * @return +0.0 if the given argument is equal to 0
 	 */
 	private double fixIfZero(double d) {
-		if (d == -0.0) {
+		if (d >= -0.0 && d < 0.000000000001) {
 			return +0.0;
 		}
 		return d;

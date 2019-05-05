@@ -33,54 +33,36 @@ public class Application {
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		/*
-		JMenuBar bar = new JMenuBar();
-		bar.add(new JMenu("hello", true));
-		frame.setJMenuBar(bar);
-		*/
-
-		
-
 		// innerPanel set-up
 		JPanel innerPanel = new JPanel(new BorderLayout());
-		ControlPanel controls = new ControlPanel();
-		Display screen = new Display(new TransformationPlane(), 900, 900);
-		//innerPanel.add(controls, BorderLayout.WEST);
+		Display screen = new Display(new TransformationPlane(), 650, 900);
+		ControlPanel controls = new ControlPanel(screen);
+		innerPanel.add(controls, BorderLayout.WEST);
 		innerPanel.add(screen, BorderLayout.CENTER);
 		
-		frame.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
-						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) && e.isShiftDown()) {
-					InputBoxContainer.getInstance().addInputBox(new VectorBox(Vector.generateRandomVector(1, 15)));
-					screen.repaint();
-					
-				}
-				else if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers()
-						& Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
-					InputBoxContainer.getInstance().removeLast();
-					screen.repaint();
-				}
-			}
-		});
 
 		//////////////////////////////////////////////
 		frame.add(innerPanel);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+					screen.repaint();
+					try {
+						Thread.sleep(333);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		}).run();
+
 	}
 }

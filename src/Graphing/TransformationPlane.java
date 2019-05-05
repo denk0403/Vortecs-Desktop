@@ -10,7 +10,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
 
+import javax.swing.JPopupMenu;
+
 import Controls.InputBoxContainer;
+import Controls.TransformationRightClick;
 import Matrices.Matrix2D;
 import Vectors.CartesianVector;
 import Vectors.Vector;
@@ -113,7 +116,6 @@ public class TransformationPlane implements Transformable {
 	public void display(Graphics g, Camera camera, Display display) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.transform(camera.getTransform());
-		// g2.transform(this.getMatrix().getAsAffineTransform());
 
 		// gets drawing scale of graphics object
 		float realScale = (float) camera.getScale();
@@ -152,18 +154,9 @@ public class TransformationPlane implements Transformable {
 		}
 		xShift = (int) Math.round(v.getXComponent());
 		yShift = (int) Math.round(v.getYComponent());
+		
+		NUM_OF_GRID_LINES = 150; // needs work
 
-		// adjusts the # of grid lines needed for the given display size and basis
-		// vectors
-		v = new CartesianVector(display.getWidth(), display.getHeight());
-		v = this.matrix.transform(v);
-		NUM_OF_GRID_LINES = 200; // needs work
-		/*
-		 * (int) Math.abs(Math.min(MAX_NUM_OF_GRID_LINES, (Math.max(v.getXComponent(),
-		 * v.getYComponent()) / gridInterval /
-		 * TransformationPlane.minRecip(this.matrix.getDeterminant()) /2)))+2;
-		 */
-		System.out.println(NUM_OF_GRID_LINES);
 
 		// sets the stroke to look consistent with the scale
 		g2.setStroke(new BasicStroke(1.5f / realScale));
@@ -276,6 +269,7 @@ public class TransformationPlane implements Transformable {
 				v2.getYComponent()));
 	}
 
+	// TBH, The math here is was mostly just guessed and checked
 	private void drawNumberLabels(Graphics2D g2, Camera camera, int xShift, int yShift, float realScale,
 			float artScale, double scaleCount) {
 		
@@ -286,7 +280,7 @@ public class TransformationPlane implements Transformable {
 		
 		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		
 		float fontNum = 3f;
 		
@@ -364,6 +358,11 @@ public class TransformationPlane implements Transformable {
 	 */
 	public void setMatrix(Matrix2D m) {
 		this.matrix = m;
+	}
+	
+	@Override
+	public JPopupMenu getRightClickMenu(Display display) {
+		return new TransformationRightClick(display, this);
 	}
 
 }
