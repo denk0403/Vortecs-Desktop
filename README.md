@@ -1,6 +1,6 @@
 # Vortecs Desktop ![image](https://user-images.githubusercontent.com/3473945/56632298-23175480-6627-11e9-8cb3-28e8b02294fd.png)
 
-Vortecs is a free, offline, and simple education tool for displaying 2D vectors and visualizing 2D linear transformations. It is designed to be used primarily by students who are being introduced to Linear Algebra concepts for the first time.
+Vortecs *(an anagram of "Vectors")* is a free, offline, and simple education tool for displaying 2D vectors and visualizing 2D linear transformations. It is designed to be used primarily by students who are being introduced to Linear Algebra concepts for the first time.
 
 # Features!
   - [x] Make and display 2D vectors on a coordinate plane.
