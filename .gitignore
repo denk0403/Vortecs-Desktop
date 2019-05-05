@@ -1,4 +1,5 @@
 
+# Ignore file named 'bin'
 bin/
 
 # Compiled class file
