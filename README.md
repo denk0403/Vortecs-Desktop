@@ -13,11 +13,14 @@ Vortecs is a free, offline, and simple education tool for displaying 2D vectors 
 
 ![image](https://user-images.githubusercontent.com/3473945/57188461-20d9b380-6ecd-11e9-941d-1f7670081f60.png)
  
+ # Download
+ Download the Runnable JAR file [here](https://drive.google.com/uc?export=download&id=1XN24E-9drJ4RyT7Lsf1913K7O97MKvXl)
+ 
 # Mobile Version
 The mobile version of this app is in development using Swift, and its progress can be monitored [here](https://github.com/jrosen081/Vortecs).
 
 # Built With
-- Java 8
+- Swing (Java 8)
 
 # Authors
 - [**Dennis Kats**](https://github.com/denk0403): *Lead Programmer and Co-Designer*
@@ -25,7 +28,7 @@ The mobile version of this app is in development using Swift, and its progress c
 
 
 # License
-Vortecs Desktop is licensed under the MIT License - see the [LICENSE](https://raw.githubusercontent.com/jrosen081/Vector/master/LICENSE) file for details
+Vortecs Desktop is licensed under the MIT License - see the [LICENSE](https://github.com/denk0403/Vortecs-Desktop/blob/Camera/LICENSE) file for details
 
 # Acknowledgements
 - 3Blue1Brown for his amazing [Essence of Linear Algebra series](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) that was the source of inspiration for this project.
