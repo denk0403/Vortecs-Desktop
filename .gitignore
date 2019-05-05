@@ -2,6 +2,10 @@
 # Ignore file named 'bin'
 bin/
 
+.classpath
+.project
+.settings/
+
 # Compiled class file
 *.class
 
