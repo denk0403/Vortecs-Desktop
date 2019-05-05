@@ -11,7 +11,7 @@ Vortecs is a free, offline, and simple education tool for displaying 2D vectors 
   - [x] Adjust the animation speed
   - [x] Right-click during animations to pause, play, or stop the animation
 
-![image](https://user-images.githubusercontent.com/3473945/57188133-9773b280-6ec7-11e9-82b3-e6c2be881f72.png)
+![image](https://user-images.githubusercontent.com/3473945/57188461-20d9b380-6ecd-11e9-941d-1f7670081f60.png)
  
 # Mobile Version
 The mobile version of this app is in development using Swift, and its progress can be monitored [here](https://github.com/jrosen081/Vortecs).
